@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cravings Cafe - Make Me Smile</title>
+</head>
+
+<body style="font-family: Arial; text-align:center; padding:30px;">
+
+  <h2>👋 Hey there!</h2>
+  <p>Your name looks good here 😊</p>
+
+  <input
+    id="customerName"
+    placeholder="Enter your name"
+    style="padding:10px; font-size:16px; width:80%; max-width:300px;"
+  />
+
+  <br><br>
+
+  <button
+    onclick="makeMeSmile()"
+    style="padding:12px 20px; font-size:16px; cursor:pointer;"
+  >
+    Make Me Smile
+  </button>
+
+  <p id="result" style="margin-top:30px; font-size:18px;"></p>
+
+  <a
+    id="reviewBtn"
+    href="#"
+    target="_blank"
+    style="display:none; margin-top:20px; font-size:18px; color:blue;"
+  >
+    ⭐ Leave us a Google Review
+  </a>
+
+  <script>
+    function makeMeSmile() {
+      const name = document.getElementById("customerName").value.trim();
+      if (!name) {
+        alert("Please enter your name 😊");
+        return;
+      }
+
+      fetch("PASTE_OPAL_WEBHOOK_URL_HERE", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customer_name: name
+        })
+      })
+      .then(res => res.text())
+      .then(msg => {
+        document.getElementById("result").innerText = msg;
+        document.getElementById("reviewBtn").style.display = "block";
+        document.getElementById("reviewBtn").href = "https://www.google.com/search?sca_esv=e93d873ff7c43fb4&rlz=1C1CHBD_enIN1053IN1053&si=AMgyJEtREmoPL4P1I5IDCfuA8gybfVI2d5Uj7QMwYCZHKDZ-ExaKqpd5uIVfVs04NNu0sFSPFivoKtydxZ__6rpijCJjyyY1lw5ghC7Nw3tq72WKc1YwzieVsQEpBq8d4-6xlb0IOKE1&q=Cravings+Cafe+Reviews&sa=X&ved=2ahUKEwjW0Krm0d-RAxW3amwGHUdbKWEQ0bkNegQIMBAD&biw=1536&bih=695&dpr=1.25";
+      })
+      .catch(err => {
+        document.getElementById("result").innerText = "Oops! Something went wrong.";
+      });
+    }
+  </script>
+
+</body>
+</html>
