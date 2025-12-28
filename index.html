@@ -118,6 +118,9 @@
 <a id="reviewBtn" href="#" target="_blank">⭐ Leave us a review</a>
 
 <script>
+const API_URL = "https://cravings-smile-serverless.vercel.app/api/smile"; // Your serverless function URL
+const GOOGLE_REVIEW_URL = "https://www.google.com/search?sca_esv=e93d873ff7c43fb4&rlz=1C1CHBD_enIN1053IN1053&si=AMgyJEtREmoPL4P1I5IDCfuA8gybfVI2d5Uj7QMwYCZHKDZ-ExaKqpd5uIVfVs04NNu0sFSPFivoKtydxZ__6rpijCJjyyY1lw5ghC7Nw3tq72WKc1YwzieVsQEpBq8d4-6xlb0IOKE1&q=Cravings+Cafe+Reviews&sa=X&ved=2ahUKEwjW0Krm0d-RAxW3amwGHUdbKWEQ0bkNegQIMBAD&biw=1536&bih=695&dpr=1.25";
+
 async function makeMeSmile() {
   const name = document.getElementById("customerName").value.trim();
   if(!name){ alert("Please enter your name! 😊"); return; }
@@ -128,7 +131,7 @@ async function makeMeSmile() {
   document.getElementById("reviewBtn").style.display = "none";
 
   try {
-    const response = await fetch("https://cravings-smile-serverless.vercel.app/api/smile", {
+    const response = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ customer_name: name })
@@ -139,7 +142,7 @@ async function makeMeSmile() {
 
     const reviewBtn = document.getElementById("reviewBtn");
     reviewBtn.style.display = "inline-block";
-    reviewBtn.href = "https://www.google.com/search?q=Cravings+Cafe+Reviews";
+    reviewBtn.href = GOOGLE_REVIEW_URL;
 
   } catch(err) {
     resultEl.innerText = "Oops! Something went wrong. 😅";
@@ -159,6 +162,8 @@ function typeWriter(el, text, i) {
 
 </body>
 </html>
+
+
 
 
 
