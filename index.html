@@ -16,54 +16,30 @@
     margin: 0;
     padding: 20px;
     background: linear-gradient(135deg, #fceabb, #f8b500);
-    transition: background 1s ease-in-out;
   }
-
   h2 {
     margin-bottom: 20px;
-    text-align: center;
     font-size: 2rem;
     color: #d9553f;
-    text-shadow: 1px 1px #fff5;
-    animation: fadeIn 1.5s ease forwards;
-    opacity: 0;
+    text-align: center;
   }
-
-  input {
+  input, button {
     padding: 12px 15px;
     margin: 10px 0;
     font-size: 16px;
     border-radius: 12px;
     border: 2px solid #d9553f;
     outline: none;
-    width: 250px;
-    transition: all 0.3s ease;
   }
-
-  input:focus {
-    border-color: #ff7f50;
-    box-shadow: 0 0 12px rgba(255,127,80,0.6);
-  }
-
   button {
-    padding: 12px 25px;
-    font-size: 16px;
-    font-weight: 600;
-    border: none;
-    border-radius: 12px;
-    background: #ffd700;
+    background-color: #ffd700;
     color: #d9553f;
+    font-weight: bold;
+    border: none;
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    transition: all 0.3s ease;
+    transition: 0.3s ease;
   }
-
-  button:hover {
-    background: #ffbf00;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-  }
-
+  button:hover { background-color: #ffbf00; }
   #result {
     margin-top: 25px;
     min-height: 80px;
@@ -76,10 +52,7 @@
     font-size: 1.1rem;
     font-weight: 500;
     word-wrap: break-word;
-    opacity: 0;
-    transition: opacity 0.5s ease;
   }
-
   #reviewBtn {
     display: none;
     margin-top: 20px;
@@ -89,22 +62,6 @@
     background-color: #4caf50;
     font-weight: 600;
     border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    transition: all 0.3s ease;
-  }
-
-  #reviewBtn:hover {
-    background-color: #45a049;
-    transform: translateY(-3px);
-  }
-
-  @keyframes fadeIn {
-    to { opacity: 1; }
-  }
-
-  @media(max-width:500px){
-    input, button, #reviewBtn { width: 90%; }
-    h2 { font-size: 1.6rem; }
   }
 </style>
 </head>
@@ -112,21 +69,20 @@
 
 <h2>👋 Welcome to Cravings Cafe!</h2>
 <input id="customerName" placeholder="Enter your name" />
-<button onclick="makeMeSmile()">Make Me Smile 😄</button>
+<button id="smileBtn">Make Me Smile 😄</button>
 
 <div id="result"></div>
 <a id="reviewBtn" href="#" target="_blank">⭐ Leave us a review</a>
 
 <script>
-const API_URL = "https://cravings-smile-serverless.vercel.app/api/smile"; // Your serverless function URL
-const GOOGLE_REVIEW_URL = "https://www.google.com/search?sca_esv=e93d873ff7c43fb4&rlz=1C1CHBD_enIN1053IN1053&si=AMgyJEtREmoPL4P1I5IDCfuA8gybfVI2d5Uj7QMwYCZHKDZ-ExaKqpd5uIVfVs04NNu0sFSPFivoKtydxZ__6rpijCJjyyY1lw5ghC7Nw3tq72WKc1YwzieVsQEpBq8d4-6xlb0IOKE1&q=Cravings+Cafe+Reviews&sa=X&ved=2ahUKEwjW0Krm0d-RAxW3amwGHUdbKWEQ0bkNegQIMBAD&biw=1536&bih=695&dpr=1.25";
+const API_URL = "https://cravings-smile-serverless.vercel.app/api/smile";
+const GOOGLE_REVIEW_URL = "https://www.google.com/search?q=Cravings+Cafe+Reviews";
 
-async function makeMeSmile() {
+document.getElementById("smileBtn").addEventListener("click", async () => {
   const name = document.getElementById("customerName").value.trim();
   if(!name){ alert("Please enter your name! 😊"); return; }
 
   const resultEl = document.getElementById("result");
-  resultEl.style.opacity = 0;
   resultEl.innerText = "Generating your smile... 😄";
   document.getElementById("reviewBtn").style.display = "none";
 
@@ -137,6 +93,8 @@ async function makeMeSmile() {
       body: JSON.stringify({ customer_name: name })
     });
 
+    if(!response.ok) throw new Error("API request failed");
+
     const data = await response.json();
     typeWriter(resultEl, data.message, 0);
 
@@ -145,23 +103,25 @@ async function makeMeSmile() {
     reviewBtn.href = GOOGLE_REVIEW_URL;
 
   } catch(err) {
-    resultEl.innerText = "Oops! Something went wrong. 😅";
     console.error(err);
+    resultEl.innerText = "Oops! Something went wrong. 😅";
   }
-}
+});
 
 function typeWriter(el, text, i) {
-  el.style.opacity = 1;
+  el.innerText = "";
   if(i < text.length){
     el.innerText += text.charAt(i);
-    i++;
-    setTimeout(()=>typeWriter(el,text,i), 40);
+    setTimeout(() => typeWriter(el, text, i + 1), 40);
+  } else {
+    el.innerText = text; // ensures full message is displayed at end
   }
 }
 </script>
 
 </body>
 </html>
+
 
 
 
