@@ -3,84 +3,113 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cravings Cafe - Make Me Smile</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<title>Cravings Cafe</title>
 <style>
   body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
+    height: 100vh;
     margin: 0;
-    padding: 20px;
-    background: linear-gradient(135deg, #fceabb, #f8b500);
   }
-  h2 { margin-bottom: 20px; font-size: 2rem; color: #d9553f; text-align: center; }
-  input, button { padding: 12px 15px; margin: 10px 0; font-size: 16px; border-radius: 12px; border: 2px solid #d9553f; outline: none; }
-  button { background-color: #ffd700; color: #d9553f; font-weight: bold; border: none; cursor: pointer; transition: 0.3s ease; }
-  button:hover { background-color: #ffbf00; }
-  #result { margin-top: 25px; min-height: 80px; max-width: 400px; background: rgba(0,0,0,0.6); color: #fff; padding: 15px 20px; border-radius: 15px; text-align: center; font-size: 1.1rem; font-weight: 500; word-wrap: break-word; opacity: 0; transition: opacity 0.3s ease; }
-  #reviewBtn { display: none; margin-top: 20px; padding: 12px 25px; text-decoration: none; color: #fff; background-color: #4caf50; font-weight: 600; border-radius: 12px; }
-  #reviewBtn:hover { background-color: #45a049; }
+
+  h1 {
+    font-size: 3em;
+    color: #ff5e5b;
+    text-shadow: 2px 2px #fff;
+    animation: fadeIn 2s ease forwards;
+  }
+
+  input, button {
+    padding: 10px 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: none;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+  }
+
+  input {
+    width: 250px;
+  }
+
+  button {
+    background-color: #ff5e5b;
+    color: white;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #ff7875;
+    transform: scale(1.05);
+  }
+
+  #message {
+    margin-top: 20px;
+    font-size: 1.5em;
+    color: #333;
+    min-height: 50px;
+    text-align: center;
+    animation: fadeIn 1s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px);}
+    to { opacity: 1; transform: translateY(0);}
+  }
 </style>
 </head>
 <body>
 
-<h2>👋 Welcome to Cravings Cafe!</h2>
-<input id="customerName" placeholder="Enter your name" />
+<h1>👋 Welcome to Cravings Cafe!</h1>
+
+<input type="text" id="nameInput" placeholder="Enter your name" />
 <button id="smileBtn">Make Me Smile 😄</button>
 
-<div id="result"></div>
-<a id="reviewBtn" href="#" target="_blank">⭐ Leave us a review</a>
+<div id="message"></div>
 
 <script>
-const API_URL = "https://cravings-smile-serverless.vercel.app/api/smile"; // Your Vercel function
-const GOOGLE_REVIEW_URL = "https://www.google.com/search?q=Cravings+Cafe+Reviews";
+  const button = document.getElementById("smileBtn");
+  const input = document.getElementById("nameInput");
+  const messageDiv = document.getElementById("message");
 
-document.getElementById("smileBtn").addEventListener("click", async () => {
-  const name = document.getElementById("customerName").value.trim();
-  if(!name){ alert("Please enter your name! 😊"); return; }
+  button.addEventListener("click", async () => {
+    const customerName = input.value.trim();
+    if (!customerName) {
+      messageDiv.textContent = "Please enter your name first!";
+      return;
+    }
 
-  const resultEl = document.getElementById("result");
-  resultEl.style.opacity = 1;
-  resultEl.innerText = "Generating your smile... 😄";
-  document.getElementById("reviewBtn").style.display = "none";
+    messageDiv.textContent = "Generating your smile... 😃";
 
-  try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ customer_name: name })
-    });
+    try {
+      const response = await fetch("https://cravings-smile-serverless.vercel.app/api/smile", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ customer_name: customerName })
+      });
 
-    if(!response.ok) throw new Error("API request failed");
+      if (!response.ok) throw new Error("Failed to fetch");
 
-    const data = await response.json();
-    resultEl.innerText = "";
-    typeWriter(resultEl, data.message, 0);
+      const data = await response.json();
+      messageDiv.textContent = data.message;
 
-    const reviewBtn = document.getElementById("reviewBtn");
-    reviewBtn.style.display = "inline-block";
-    reviewBtn.href = GOOGLE_REVIEW_URL;
-
-  } catch(err) {
-    console.error(err);
-    resultEl.innerText = "Oops! Something went wrong. 😅";
-  }
-});
-
-function typeWriter(el, text, i) {
-  if(i < text.length){
-    el.innerText += text.charAt(i);
-    setTimeout(()=>typeWriter(el,text,i+1), 40);
-  }
-}
+    } catch (error) {
+      console.error(error);
+      messageDiv.textContent = "Oops! Something went wrong. 😅";
+    }
+  });
 </script>
 
 </body>
 </html>
+
+
 
 
 
