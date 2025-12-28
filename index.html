@@ -17,52 +17,13 @@
     padding: 20px;
     background: linear-gradient(135deg, #fceabb, #f8b500);
   }
-  h2 {
-    margin-bottom: 20px;
-    font-size: 2rem;
-    color: #d9553f;
-    text-align: center;
-  }
-  input, button {
-    padding: 12px 15px;
-    margin: 10px 0;
-    font-size: 16px;
-    border-radius: 12px;
-    border: 2px solid #d9553f;
-    outline: none;
-  }
-  button {
-    background-color: #ffd700;
-    color: #d9553f;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    transition: 0.3s ease;
-  }
+  h2 { margin-bottom: 20px; font-size: 2rem; color: #d9553f; text-align: center; }
+  input, button { padding: 12px 15px; margin: 10px 0; font-size: 16px; border-radius: 12px; border: 2px solid #d9553f; outline: none; }
+  button { background-color: #ffd700; color: #d9553f; font-weight: bold; border: none; cursor: pointer; transition: 0.3s ease; }
   button:hover { background-color: #ffbf00; }
-  #result {
-    margin-top: 25px;
-    min-height: 80px;
-    max-width: 400px;
-    background: rgba(0,0,0,0.6);
-    color: #fff;
-    padding: 15px 20px;
-    border-radius: 15px;
-    text-align: center;
-    font-size: 1.1rem;
-    font-weight: 500;
-    word-wrap: break-word;
-  }
-  #reviewBtn {
-    display: none;
-    margin-top: 20px;
-    padding: 12px 25px;
-    text-decoration: none;
-    color: #fff;
-    background-color: #4caf50;
-    font-weight: 600;
-    border-radius: 12px;
-  }
+  #result { margin-top: 25px; min-height: 80px; max-width: 400px; background: rgba(0,0,0,0.6); color: #fff; padding: 15px 20px; border-radius: 15px; text-align: center; font-size: 1.1rem; font-weight: 500; word-wrap: break-word; }
+  #reviewBtn { display: none; margin-top: 20px; padding: 12px 25px; text-decoration: none; color: #fff; background-color: #4caf50; font-weight: 600; border-radius: 12px; }
+  #reviewBtn:hover { background-color: #45a049; }
 </style>
 </head>
 <body>
@@ -75,7 +36,7 @@
 <a id="reviewBtn" href="#" target="_blank">⭐ Leave us a review</a>
 
 <script>
-const API_URL = "https://cravings-smile-serverless.vercel.app/api/smile";
+const API_URL = "https://cravings-smile-serverless.vercel.app/api/smile"; // Your Vercel API
 const GOOGLE_REVIEW_URL = "https://www.google.com/search?q=Cravings+Cafe+Reviews";
 
 document.getElementById("smileBtn").addEventListener("click", async () => {
@@ -96,6 +57,7 @@ document.getElementById("smileBtn").addEventListener("click", async () => {
     if(!response.ok) throw new Error("API request failed");
 
     const data = await response.json();
+    resultEl.innerText = "";
     typeWriter(resultEl, data.message, 0);
 
     const reviewBtn = document.getElementById("reviewBtn");
@@ -109,18 +71,17 @@ document.getElementById("smileBtn").addEventListener("click", async () => {
 });
 
 function typeWriter(el, text, i) {
-  el.innerText = "";
   if(i < text.length){
     el.innerText += text.charAt(i);
-    setTimeout(() => typeWriter(el, text, i + 1), 40);
-  } else {
-    el.innerText = text; // ensures full message is displayed at end
+    setTimeout(()=>typeWriter(el,text,i+1), 40);
   }
 }
 </script>
 
 </body>
 </html>
+
+
 
 
 
